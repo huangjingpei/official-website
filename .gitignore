@@ -1,0 +1,65 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Node.js ###
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+.env*.local
+
+### Logs ###
+logs/
+*.log
+
+### Go Launcher & Protection Artifacts ###
+# Executables (Binary output)
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Generated JARs in launcher (copied from agent or encrypted)
+protection/go-launcher/launcher/*.jar
+protection/go-launcher/encryptor/*.jar
+
+# Generated Keys
+*.key
+
+# Backups
+static_backup/
+
+# System
+.DS_Store
+Thumbs.db
