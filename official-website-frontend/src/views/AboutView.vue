@@ -20,7 +20,7 @@ const onSubmit = async () => {
   <section class="section">
     <div class="container">
       <h2>关于我们</h2>
-      <p>地址：杭州市 · 栩文科技有限公司</p>
+      <p>地址：杭州市 · 杭州栩文科技有限公司</p>
       <div class="qr-grid">
         <div class="qr-box">企业二维码</div>
         <div class="qr-box">QQ二维码</div>

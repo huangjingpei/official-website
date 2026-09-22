@@ -63,3 +63,9 @@ static_backup/
 # System
 .DS_Store
 Thumbs.db
+
+### App Data Uploads ###
+data/uploads/
+data/*.rar
+data/*.zip
+
