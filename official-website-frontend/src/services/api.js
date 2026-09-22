@@ -60,5 +60,6 @@ export const uploadDownload = ({ name, version, file }) => {
   form.append('file', file)
   return api.post('/admin/downloads', form)
 }
+export const getAdminContacts = () => api.get('/admin/contacts')
 
 export default api

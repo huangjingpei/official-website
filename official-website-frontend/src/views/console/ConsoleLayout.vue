@@ -8,6 +8,7 @@ const router = useRouter()
 const items = [
   { to: '/console/downloads', label: '软件升级' },
   { to: '/console/news', label: '实时要闻' },
+  { to: '/console/contacts', label: '客户留言' },
   { to: '/console/theme', label: '主题设置' },
   { to: '/console/password', label: '修改密码' }
 ]

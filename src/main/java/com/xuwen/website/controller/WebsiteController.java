@@ -132,6 +132,8 @@ public class WebsiteController {
         return response.body(resource);
     }
 
+    private final List<Map<String, Object>> contactList = new java.util.concurrent.CopyOnWriteArrayList<>();
+
     @PostMapping(value = "/admin/downloads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public DownloadItem uploadDownload(
             @RequestParam(required = false) String name,
@@ -141,10 +143,21 @@ public class WebsiteController {
         return downloadStore.add(name, version, file);
     }
 
-
     @PostMapping("/contacts")
     public ResponseEntity<Map<String, String>> submitContact(@Valid @RequestBody ContactRequest request) {
+        Map<String, Object> record = new java.util.LinkedHashMap<>();
+        record.put("id", System.currentTimeMillis());
+        record.put("name", request.name());
+        record.put("contact", request.contact());
+        record.put("message", request.message());
+        record.put("createdAt", java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        contactList.add(0, record);
         return ResponseEntity.ok(Map.of("message", "提交成功，我们会尽快联系您。"));
+    }
+
+    @GetMapping("/admin/contacts")
+    public List<Map<String, Object>> getAdminContacts() {
+        return contactList;
     }
 
 }

@@ -1,4 +1,4 @@
-export const THEMES = ['business', 'cute']
+export const THEMES = ['business', 'dark', 'cute']
 
 const normalizeTheme = (value) => {
   if (typeof value !== 'string') return null

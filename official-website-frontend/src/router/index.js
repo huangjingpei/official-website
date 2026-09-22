@@ -9,6 +9,7 @@ import SolutionsView from '../views/SolutionsView.vue'
 import ConsoleLayout from '../views/console/ConsoleLayout.vue'
 import ConsoleLoginView from '../views/console/ConsoleLoginView.vue'
 import ConsoleNewsView from '../views/console/ConsoleNewsView.vue'
+import ConsoleContactsView from '../views/console/ConsoleContactsView.vue'
 import ConsolePasswordView from '../views/console/ConsolePasswordView.vue'
 import ConsoleThemeView from '../views/console/ConsoleThemeView.vue'
 import { clearAuth, getAuthMe, getRole, isAuthed, setRole } from '../services/api'
@@ -28,7 +29,8 @@ const routes = [
       { path: 'downloads', name: 'console-downloads', component: AdminDownloadsView },
       { path: 'news', name: 'console-news', component: ConsoleNewsView },
       { path: 'theme', name: 'console-theme', component: ConsoleThemeView },
-      { path: 'password', name: 'console-password', component: ConsolePasswordView }
+      { path: 'password', name: 'console-password', component: ConsolePasswordView },
+      { path: 'contacts', name: 'console-contacts', component: ConsoleContactsView }
     ]
   },
   { path: '/admin', redirect: '/console/login' },
