@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <!-- 背景流光渐变 -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+
+    <!-- 品牌主色渐变：青蓝 -> 宝蓝 -> 霓虹紫 -->
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="45%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+
+    <!-- AI 能量波渐变 -->
+    <linearGradient id="aiGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#60a5fa" />
+    </linearGradient>
+
+    <!-- 边框微光 -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(56, 189, 248, 0.6)" />
+      <stop offset="50%" stop-color="rgba(99, 102, 241, 0.3)" />
+      <stop offset="100%" stop-color="rgba(124, 58, 237, 0.5)" />
+    </linearGradient>
+
+    <!-- 发光滤镜 -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- 外层圆角底座 (微科技质感) -->
+  <rect x="6" y="6" width="116" height="116" rx="28" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="2.5" />
+
+  <!-- 内部光效微晕 -->
+  <circle cx="64" cy="64" r="38" fill="#2563eb" opacity="0.12" filter="url(#glow)" />
+
+  <!-- 核心标识：极具动感与辨识度的 "G" + 音视频流波 + AI 核心节点 -->
+  <!-- G 主环形轨道 -->
+  <path
+    d="M 88 44
+       C 80 32, 60 28, 46 36
+       C 28 46, 26 72, 40 88
+       C 52 101, 78 101, 91 87
+       C 96 82, 98 75, 98 67
+       L 64 67"
+    fill="none"
+    stroke="url(#brandGrad)"
+    stroke-width="13"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- 音视频/数据流脉冲能量柱 (嵌在 G 的开口与重心区，象征低延迟与并发) -->
+  <g fill="url(#aiGrad)">
+    <!-- 脉冲柱 1 -->
+    <rect x="60" y="52" width="7" height="12" rx="3.5" />
+    <!-- 脉冲柱 2 (核心高频) -->
+    <rect x="71" y="45" width="7" height="19" rx="3.5" />
+    <!-- 脉冲柱 3 -->
+    <rect x="82" y="55" width="7" height="9" rx="3.5" />
+  </g>
+
+  <!-- 右上角 AI 星芒节点 (象征智能交互与创新赋能) -->
+  <circle cx="94" cy="32" r="5.5" fill="#38bdf8" filter="url(#glow)" />
+  <path
+    d="M 94 24 L 94 40 M 86 32 L 102 32"
+    stroke="#38bdf8"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    opacity="0.85"
+  />
+</svg>

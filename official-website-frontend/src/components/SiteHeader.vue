@@ -3,8 +3,11 @@
     <div class="container nav-row">
       <div class="brand">
         <RouterLink to="/" class="brand-link">
-          <h1>杭州栩文科技</h1>
-          <p>AI × 音视频解决方案</p>
+          <img src="/favicon.svg" alt="杭州栩文科技 Logo" class="brand-logo" />
+          <div class="brand-text">
+            <h1>杭州栩文科技</h1>
+            <p>AI × 音视频解决方案</p>
+          </div>
         </RouterLink>
       </div>
 
@@ -108,10 +111,35 @@ onUnmounted(() => {
 <style scoped>
 .brand-link {
   color: inherit;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
 }
 .brand-link:hover {
   opacity: 0.95;
+}
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.brand-link:hover .brand-logo {
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+}
+.brand-text h1 {
+  font-size: 1.15rem;
+  margin: 0;
+  line-height: 1.25;
+}
+.brand-text p {
+  font-size: 0.75rem;
+  margin: 0;
+  color: var(--muted);
 }
 .scrolled {
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
