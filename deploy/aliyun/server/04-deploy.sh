@@ -159,7 +159,7 @@ else
   fi
 
   if certbot certonly --webroot -w /var/www/certbot \
-       "${CERTBOT_DOMAINS[@]}" --non-interactive --agree-tos \
+       "${CERTBOT_DOMAINS[@]}" --cert-name "${SERVER_NAME}" --expand --non-interactive --agree-tos \
        --email "${CERTBOT_EMAIL:-hjp9221@63.com}" --keep-until-expiring 2>&1 | tail -20; then
     if [[ -f "${CERT_DIR}/fullchain.pem" ]]; then
       log "✅ SSL 证书签发成功"
