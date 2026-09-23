@@ -151,8 +151,24 @@ public class WebsiteController {
     public DownloadItem uploadDownload(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String version,
+            @RequestParam(required = false) String platform,
+            @RequestParam(required = false) String sha256,
             @RequestParam MultipartFile file) {
-        return downloadStore.add(name, version, file);
+        DownloadItem item = downloadStore.add(name, version, file);
+        // If platform/sha256 provided, rebuild with those fields
+        if ((platform != null && !platform.isBlank()) || (sha256 != null && !sha256.isBlank())) {
+            item = new DownloadItem(item.id(), item.name(), item.version(), item.date(),
+                    item.url(), item.originalFilename(), item.storedFilename(), platform, sha256);
+            downloadStore.updateMeta(item);
+        }
+        return item;
+    }
+
+    @DeleteMapping("/admin/downloads/{id}")
+    public ResponseEntity<Void> deleteDownload(@PathVariable String id) {
+        return downloadStore.delete(id)
+                ? ResponseEntity.noContent().<Void>build()
+                : ResponseEntity.notFound().build();
     }
 
     // ── Admin: news CRUD ──────────────────────────────────────────────────────

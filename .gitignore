@@ -69,3 +69,6 @@ data/uploads/
 data/*.rar
 data/*.zip
 
+### Sensitive Config (use environment variables on server) ###
+src/main/resources/application-local.properties
+src/main/resources/application-secret.properties

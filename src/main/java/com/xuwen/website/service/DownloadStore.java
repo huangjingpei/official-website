@@ -82,6 +82,24 @@ public class DownloadStore {
         return uploadDir.resolve(item.storedFilename());
     }
 
+    public synchronized boolean delete(String id) {
+        List<DownloadItem> items = new ArrayList<>(readAll());
+        DownloadItem target = items.stream().filter(i -> i.id().equals(id)).findFirst().orElse(null);
+        if (target == null) return false;
+        items.removeIf(i -> i.id().equals(id));
+        writeAll(items);
+        try {
+            java.nio.file.Files.deleteIfExists(uploadDir.resolve(target.storedFilename()));
+        } catch (java.io.IOException ignored) {}
+        return true;
+    }
+
+    public synchronized void updateMeta(DownloadItem updated) {
+        List<DownloadItem> items = new ArrayList<>(readAll());
+        items.replaceAll(i -> i.id().equals(updated.id()) ? updated : i);
+        writeAll(items);
+    }
+
     private void ensureDirectories() {
         try {
             Files.createDirectories(uploadDir);

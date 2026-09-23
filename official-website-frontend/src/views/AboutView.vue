@@ -24,6 +24,14 @@
             ✅ 需求已成功提交！感谢您的关注，我们已收到您的信息并将尽快与您联系。
           </div>
 
+          <!-- 提交失败提示 -->
+          <div
+            v-if="submitError"
+            style="background: rgba(239,68,68,0.10); border: 1px solid rgba(239,68,68,0.30); color: #dc2626; padding: 1rem; border-radius: 8px; margin-bottom: 1.2rem; font-size: 0.92rem;"
+          >
+            ⚠️ {{ submitError }}
+          </div>
+
           <form class="contact-form" @submit.prevent="onSubmit">
             <div>
               <label style="display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--ink-0);">您的称呼 / 公司名称 *</label>
@@ -130,11 +138,13 @@ const form = reactive({
 
 const submitting = ref(false)
 const submitSuccess = ref(false)
+const submitError = ref('')
 
 const onSubmit = async () => {
   if (submitting.value) return
   submitting.value = true
   submitSuccess.value = false
+  submitError.value = ''
 
   try {
     await submitContact(form)
@@ -143,7 +153,7 @@ const onSubmit = async () => {
     form.contact = ''
     form.message = ''
   } catch (error) {
-    alert('提交失败，请检查网络或稍后重试，或通过电话/邮箱直接联系我们。')
+    submitError.value = '提交失败，请检查网络连接或稍后重试。也可通过电话或邮箱直接联系我们。'
   } finally {
     submitting.value = false
   }

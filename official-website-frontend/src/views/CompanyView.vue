@@ -46,7 +46,7 @@
       <!-- 发展历程时间轴 (Milestones) -->
       <div class="card" style="padding: 2rem;">
         <h3 style="margin-top: 0; margin-bottom: 1.5rem; color: var(--ink-0);">发展历程与技术里程碑</h3>
-        <div style="display: grid; gap: 1.5rem; border-left: 2px solid var(--accent); padding-left: 1.5rem; margin-left: 0.5rem;">
+        <div class="timeline" style="display: grid; gap: 1.5rem; border-left: 2px solid var(--accent); padding-left: 1.5rem; margin-left: 0.5rem;">
           <div>
             <div style="font-weight: 700; color: var(--accent); font-size: 1.1rem;">2023 年 · 杭州创立</div>
             <p style="color: var(--muted); margin: 0.3rem 0 0;">杭州栩文科技有限公司正式成立，立项自研基于 WebRTC 的音视频低时延传输引擎与跨平台核心控制组件。</p>
@@ -68,3 +68,22 @@
     </div>
   </section>
 </template>
+
+<style scoped>
+/* 时间轴节点圆点 */
+.timeline > div {
+  position: relative;
+}
+.timeline > div::before {
+  content: '';
+  position: absolute;
+  left: -1.97rem;
+  top: 0.35rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-0, #f5f7fb);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+</style>

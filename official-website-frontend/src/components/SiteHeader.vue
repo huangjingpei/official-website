@@ -1,5 +1,5 @@
 <template>
-  <header class="site-header">
+  <header class="site-header" :class="{ scrolled }">
     <div class="container nav-row">
       <div class="brand">
         <RouterLink to="/" class="brand-link">
@@ -62,12 +62,15 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { setTheme, getTheme } from '../theme'
 
 const isDrawerOpen = ref(false)
+const scrolled = ref(false)
 const theme = ref(getTheme() || document.documentElement.getAttribute('data-theme') || 'business')
+
+const handleScroll = () => { scrolled.value = window.scrollY > 10 }
 
 const update = () => {
   theme.value = document.documentElement.getAttribute('data-theme') || 'business'
@@ -94,6 +97,11 @@ const toggleTheme = () => {
 
 onMounted(() => {
   update()
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
@@ -104,5 +112,9 @@ onMounted(() => {
 }
 .brand-link:hover {
   opacity: 0.95;
+}
+.scrolled {
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 0.25s;
 }
 </style>

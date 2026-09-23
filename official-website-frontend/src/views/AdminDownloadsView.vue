@@ -1,67 +1,30 @@
 <script setup>
-import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
-import { clearAuth, getAuthMe, getDownloads, getRole, setRole, uploadDownload } from '../services/api'
+import { onMounted, reactive, ref } from 'vue'
+import { deleteDownload, getDownloads, uploadDownload } from '../services/api'
 
-const me = ref(null)
 const loading = ref(false)
 const errorMessage = ref('')
 const downloads = ref([])
-const role = ref(getRole())
-const needsPasswordChange = ref(false)
 
-const updateRole = () => {
-  role.value = getRole()
-}
+const PLATFORMS = [
+  { value: '', label: '不限平台' },
+  { value: 'windows', label: 'Windows' },
+  { value: 'macos', label: 'macOS' },
+  { value: 'linux', label: 'Linux' },
+  { value: 'android', label: 'Android' },
+  { value: 'ios', label: 'iOS' }
+]
 
-const uploadForm = reactive({
-  name: '',
-  version: ''
-})
-
+const uploadForm = reactive({ name: '', version: '', platform: '', sha256: '' })
 const uploadFile = ref(null)
 
-const isAdmin = computed(() => {
-  return role.value === 'ADMIN'
-})
-
-const getSkipFlag = () => window.sessionStorage.getItem('admin_pw_change_skip') === '1'
-const showNeedsPasswordBanner = computed(() => needsPasswordChange.value && !getSkipFlag())
-
-const refreshMe = async () => {
-  try {
-    const { data } = await getAuthMe()
-    me.value = data
-    const roles = Array.isArray(data.roles) ? data.roles : []
-    const nextRole = roles.includes('ROLE_ADMIN') ? 'ADMIN' : 'USER'
-    role.value = nextRole
-    setRole(nextRole)
-    errorMessage.value = ''
-    needsPasswordChange.value = Boolean(data.needsPasswordChange)
-  } catch (error) {
-    me.value = null
-    role.value = getRole()
-    errorMessage.value = ''
-    needsPasswordChange.value = false
-  }
-}
-
 const refreshDownloads = async () => {
-  const { data } = await getDownloads()
-  downloads.value = data
-}
-
-const onSkipPasswordPrompt = () => {
-  window.sessionStorage.setItem('admin_pw_change_skip', '1')
-  needsPasswordChange.value = false
-}
-
-const onLogout = async () => {
-  clearAuth()
-  window.sessionStorage.removeItem('admin_pw_change_skip')
-  me.value = null
-  role.value = null
-  downloads.value = []
-  needsPasswordChange.value = false
+  try {
+    const { data } = await getDownloads()
+    downloads.value = data
+  } catch {
+    downloads.value = []
+  }
 }
 
 const onPickFile = (event) => {
@@ -69,25 +32,26 @@ const onPickFile = (event) => {
 }
 
 const onUpload = async () => {
-  if (!uploadFile.value) {
-    errorMessage.value = '请选择要上传的软件文件。'
-    return
-  }
+  if (!uploadFile.value) { errorMessage.value = '请选择要上传的软件文件。'; return }
   loading.value = true
+  errorMessage.value = ''
   try {
     await uploadDownload({
       name: uploadForm.name,
       version: uploadForm.version,
+      platform: uploadForm.platform,
+      sha256: uploadForm.sha256,
       file: uploadFile.value
     })
     uploadForm.name = ''
     uploadForm.version = ''
+    uploadForm.platform = ''
+    uploadForm.sha256 = ''
     uploadFile.value = null
     await refreshDownloads()
-    errorMessage.value = ''
   } catch (error) {
     if (error?.response?.status === 401 || error?.response?.status === 403) {
-      errorMessage.value = '权限不足或登录失效，请重新登录 administrator。'
+      errorMessage.value = '权限不足或登录失效，请重新登录。'
     } else if (error?.response?.status === 413) {
       errorMessage.value = error?.response?.data?.message || '文件过大，请更换较小的文件或联系管理员调整上传限制。'
     } else {
@@ -98,17 +62,17 @@ const onUpload = async () => {
   }
 }
 
-onMounted(async () => {
-  window.addEventListener('auth-changed', updateRole)
-  await refreshMe()
-  if (isAdmin.value) {
+const onDelete = async (item) => {
+  if (!confirm(`确认删除「${item.name}」？文件将从服务器永久删除。`)) return
+  try {
+    await deleteDownload(item.id)
     await refreshDownloads()
+  } catch {
+    errorMessage.value = '删除失败，请稍后重试。'
   }
-})
+}
 
-onUnmounted(() => {
-  window.removeEventListener('auth-changed', updateRole)
-})
+onMounted(refreshDownloads)
 </script>
 
 <template>
@@ -120,51 +84,62 @@ onUnmounted(() => {
 
     <div v-if="errorMessage" class="console-alert console-alert-error">{{ errorMessage }}</div>
 
-    <div v-if="!isAdmin" class="console-panel">
-      <div class="console-panel-title">需要登录</div>
-      <div class="meta">请先前往管理后台登录页完成登录。</div>
-      <div class="console-actions">
-        <RouterLink class="console-topbar-link" to="/console/login">前往登录</RouterLink>
-      </div>
-    </div>
-
-    <div v-else class="console-grid">
+    <div class="console-grid">
+      <!-- 上传表单 -->
       <div class="console-panel">
-        <div class="console-panel-title">上传软件</div>
-        <div v-if="showNeedsPasswordBanner" class="console-alert console-alert-warn" style="margin-bottom: 0.85rem">
-          检测到你仍在使用初始密码，建议先去“修改密码”页面设置新密码。
-          <RouterLink class="console-link-inline" to="/console/password">前往修改</RouterLink>
-          <button class="console-link-btn" type="button" @click="onSkipPasswordPrompt">跳过</button>
-        </div>
-
+        <div class="console-panel-title">上传软件包</div>
         <div class="console-form">
           <div class="console-field">
             <div class="console-label">软件名称</div>
-            <input v-model="uploadForm.name" class="console-input" placeholder="可选" />
+            <input v-model="uploadForm.name" class="console-input" placeholder="如：Penclaw 远程工具" />
           </div>
           <div class="console-field">
-            <div class="console-label">版本</div>
-            <input v-model="uploadForm.version" class="console-input" placeholder="可选，如 v1.0.0" />
+            <div class="console-label">版本号</div>
+            <input v-model="uploadForm.version" class="console-input" placeholder="如：v1.2.0" />
+          </div>
+          <div class="console-field">
+            <div class="console-label">适用平台</div>
+            <select v-model="uploadForm.platform" class="console-input">
+              <option v-for="p in PLATFORMS" :key="p.value" :value="p.value">{{ p.label }}</option>
+            </select>
+          </div>
+          <div class="console-field">
+            <div class="console-label">SHA256 校验和 <span style="color:#94a3b8;font-weight:400;">（可选）</span></div>
+            <input v-model="uploadForm.sha256" class="console-input" placeholder="文件 SHA256 哈希值" style="font-family:monospace;font-size:.85rem;" />
           </div>
           <div class="console-field" style="grid-column: 1 / -1">
-            <div class="console-label">文件</div>
-            <input type="file" @change="onPickFile" />
+            <div class="console-label">选择文件 <span style="color:#ef4444">*</span></div>
+            <input type="file" @change="onPickFile" style="font-size:.9rem;" />
+            <div v-if="uploadFile" style="margin-top:.4rem;font-size:.8rem;color:#64748b;">
+              已选择：{{ uploadFile.name }}（{{ (uploadFile.size / 1024 / 1024).toFixed(1) }} MB）
+            </div>
           </div>
           <div class="console-actions">
-            <button class="console-btn console-btn-primary" :disabled="loading" type="button" @click="onUpload">上传</button>
-            <button class="console-btn console-btn-danger" type="button" @click="onLogout">退出登录</button>
+            <button class="console-btn console-btn-primary" :disabled="loading" type="button" @click="onUpload">
+              {{ loading ? '上传中...' : '确认上传' }}
+            </button>
           </div>
         </div>
       </div>
 
+      <!-- 已发布列表 -->
       <div class="console-panel">
-        <div class="console-panel-title">当前软件列表</div>
-        <div v-if="downloads.length === 0" class="meta">暂无软件</div>
+        <div class="console-panel-title">已发布文件列表</div>
+        <div v-if="downloads.length === 0" class="meta" style="margin-top:.8rem;">暂无已发布软件。</div>
         <div v-else class="console-list">
-          <div v-for="item in downloads" :key="item.id" class="console-list-item">
-            <div class="console-list-title">{{ item.name }}</div>
-            <div class="meta">版本：{{ item.version }}</div>
-            <div class="meta">更新时间：{{ item.date }}</div>
+          <div v-for="item in downloads" :key="item.id" class="console-list-item" style="display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem;">
+            <div style="min-width:0;flex:1;">
+              <div class="console-list-title">{{ item.name }}</div>
+              <div class="meta">版本：{{ item.version || '-' }}</div>
+              <div class="meta">平台：{{ item.platform || '通用' }}</div>
+              <div class="meta">更新：{{ item.date }}</div>
+            </div>
+            <button
+              class="console-btn console-btn-danger"
+              type="button"
+              style="flex-shrink:0;font-size:.82rem;padding:.28rem .6rem;"
+              @click="onDelete(item)"
+            >删除</button>
           </div>
         </div>
       </div>

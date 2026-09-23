@@ -53,13 +53,16 @@ export const downloadUrlFor = (id) => resolveApiUrl(`/api/downloads/${id}/downlo
 export const submitContact = (payload) => api.post('/contacts', payload)
 export const getAuthMe = () => api.get('/auth/me')
 export const changePassword = (newPassword) => api.post('/auth/change-password', { newPassword })
-export const uploadDownload = ({ name, version, file }) => {
+export const uploadDownload = ({ name, version, platform, sha256, file }) => {
   const form = new FormData()
   if (name) form.append('name', name)
   if (version) form.append('version', version)
+  if (platform) form.append('platform', platform)
+  if (sha256) form.append('sha256', sha256)
   form.append('file', file)
   return api.post('/admin/downloads', form)
 }
+export const deleteDownload = (id) => api.delete(`/admin/downloads/${id}`)
 export const getAdminContacts = () => api.get('/admin/contacts')
 
 // Admin news CRUD
