@@ -16,14 +16,18 @@ public class NewsStore {
 
     private final JdbcTemplate jdbc;
 
-    private static final RowMapper<NewsItem> ROW_MAPPER = (rs, rowNum) -> new NewsItem(
-            rs.getLong("id"),
-            rs.getString("title"),
-            rs.getString("summary"),
-            rs.getString("content"),
-            rs.getBoolean("published"),
-            rs.getObject("created_at", LocalDate.class)
-    );
+    private static final RowMapper<NewsItem> ROW_MAPPER = (rs, rowNum) -> {
+        java.sql.Date sqlDate = rs.getDate("created_at");
+        LocalDate date = sqlDate != null ? sqlDate.toLocalDate() : null;
+        return new NewsItem(
+                rs.getLong("id"),
+                rs.getString("title"),
+                rs.getString("summary"),
+                rs.getString("content"),
+                rs.getBoolean("published"),
+                date
+        );
+    };
 
     public NewsStore(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
@@ -62,7 +66,7 @@ public class NewsStore {
             ps.setString(2, req.summary() == null ? "" : req.summary());
             ps.setString(3, req.content() == null ? "" : req.content());
             ps.setBoolean(4, req.published() == null || req.published());
-            ps.setObject(5, LocalDate.now());
+            ps.setTimestamp(5, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
             return ps;
         }, keyHolder);
         Long id = keyHolder.getKey().longValue();
