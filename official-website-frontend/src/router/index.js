@@ -5,7 +5,9 @@ import CompanyView from '../views/CompanyView.vue'
 import DownloadsView from '../views/DownloadsView.vue'
 import HomeView from '../views/HomeView.vue'
 import NewsView from '../views/NewsView.vue'
+import PrivacyView from '../views/PrivacyView.vue'
 import SolutionsView from '../views/SolutionsView.vue'
+import TermsView from '../views/TermsView.vue'
 import ConsoleLayout from '../views/console/ConsoleLayout.vue'
 import ConsoleLoginView from '../views/console/ConsoleLoginView.vue'
 import ConsoleNewsView from '../views/console/ConsoleNewsView.vue'
@@ -35,7 +37,9 @@ const routes = [
   },
   { path: '/admin', redirect: '/console/login' },
   { path: '/login', redirect: '/console/login' },
-  { path: '/about', name: 'about', component: AboutView }
+  { path: '/about', name: 'about', component: AboutView },
+  { path: '/privacy', name: 'privacy', component: PrivacyView },
+  { path: '/terms', name: 'terms', component: TermsView }
 ]
 
 const router = createRouter({

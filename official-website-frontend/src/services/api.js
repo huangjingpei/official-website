@@ -62,4 +62,11 @@ export const uploadDownload = ({ name, version, file }) => {
 }
 export const getAdminContacts = () => api.get('/admin/contacts')
 
+// Admin news CRUD
+export const adminGetNews = () => api.get('/admin/news')
+export const adminCreateNews = (payload) => api.post('/admin/news', payload)
+export const adminUpdateNews = (id, payload) => api.put(`/admin/news/${id}`, payload)
+export const adminDeleteNews = (id) => api.delete(`/admin/news/${id}`)
+export const getNewsDetail = (id) => api.get(`/news/${id}`)
+
 export default api

@@ -52,6 +52,11 @@
       <div class="copyright">
         © 2024 graddu.com 版权所有 | 本网站为杭州栩文科技有限公司所有
       </div>
+      <div class="legal-links">
+        <RouterLink to="/privacy" style="color: #94a3b8; text-decoration: none; margin: 0 .4rem;">隐私保护指引</RouterLink>
+        <span style="color: #475569;">|</span>
+        <RouterLink to="/terms" style="color: #94a3b8; text-decoration: none; margin: 0 .4rem;">用户服务协议</RouterLink>
+      </div>
     </div>
   </footer>
 </template>
